@@ -10,8 +10,8 @@ def enviar_email(corpo_email='', Subject=''):
 
     msg = email.message.Message()
     msg['Subject'] = Subject
-    msg['From'] = 'luiggisperandio@gmail.com'
-    msg['To'] = 'luiggisperandio@gmail.com,almeida.marianasilva@gmail.com'
+    msg['From'] = environ['MY_EMAIL']
+    msg['To'] = environ['SEND_EMAIL_TO']
     password = environ['PW_SHOWCHECKER']
     msg.add_header('Content-Type', 'text/html')
     msg.set_payload(corpo_email)
@@ -61,3 +61,4 @@ else:
     """
     Subject = f'Novos Shows do Gil disponíveis!'
     enviar_email(corpo_email=corpo_email, Subject=Subject)
+    print('Email send')
