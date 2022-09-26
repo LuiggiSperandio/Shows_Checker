@@ -5,13 +5,13 @@ from os import environ
 import smtplib
 import email.message
 
-def enviar_email(corpo_email='', Subject=''):
+def enviar_email(corpo_email='', Subject='', to=''):
     corpo_email = corpo_email
 
     msg = email.message.Message()
     msg['Subject'] = Subject
     msg['From'] = environ['MY_EMAIL']
-    msg['To'] = environ['SEND_EMAIL_TO']
+    msg['To'] = to
     password = environ['PW_SHOWCHECKER']
     msg.add_header('Content-Type', 'text/html')
     msg.set_payload(corpo_email)
@@ -60,5 +60,8 @@ else:
     <p><img src="https://portal.unit.br/wp-content/uploads/2022/02/GILBERTO-GIL_Credito_Fernando-Young_Divulgacao-1-492x413.jpg" alt="Foto do Gil"></p>
     """
     Subject = f'Novos Shows do Gil disponíveis!'
-    enviar_email(corpo_email=corpo_email, Subject=Subject)
+
+    email_list = environ['SEND_EMAIL_TO'].split(',')
+    for email in email_list:
+        enviar_email(corpo_email=corpo_email, Subject=Subject, to=email)
     print('Email send')
