@@ -62,6 +62,6 @@ else:
     Subject = f'Novos Shows do Gil disponíveis!'
 
     email_list = environ['SEND_EMAIL_TO'].split(',')
-    for email in email_list:
-        enviar_email(corpo_email=corpo_email, Subject=Subject, to=email)
-    print('Email send')
+    for email_to in email_list:
+        enviar_email(corpo_email=corpo_email, Subject=Subject, to=email_to)
+        print(f'Email send to {email_to}')
