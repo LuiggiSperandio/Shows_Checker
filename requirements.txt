@@ -1,5 +1,7 @@
 requests
 beautifulsoup4
 pandas
-pymongo
 mongoengine
+pymongo
+pymongo[srv]
+dnspython
