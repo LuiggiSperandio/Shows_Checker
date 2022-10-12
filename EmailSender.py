@@ -4,6 +4,7 @@ import pandas as pd
 from os import environ
 import smtplib
 import email.message
+from models.RawData import RawData
 
 def enviar_email(corpo_email='', Subject='', to=''):
     corpo_email = corpo_email
@@ -21,6 +22,14 @@ def enviar_email(corpo_email='', Subject='', to=''):
     s.starttls()
     s.login(msg['From'], password)
     s.sendmail(msg['From'], msg['To'], msg.as_string().encode('utf-8'))
+
+def uploadMongo(upload_dict = {}, apiName=''):
+    data = upload_dict
+    model = RawData(
+        data=data,
+        apiName=apiName
+    )
+    model.save()
 
 r = requests.get('https://gilbertogil.com.br/agenda/')
 df = pd.DataFrame()
@@ -42,14 +51,21 @@ for item in soup.find_all('p'):
         iteracao = 0
 
 df['Cidade'] = df.Cidade.str.upper()
-df1 = pd.read_csv('yesterday_shows.csv', sep=';', encoding='utf8')
-df.to_csv('yesterday_shows.csv', index=False, sep=';', encoding='utf8')
+
+yesterday_data = RawData.objects.order_by('-createdAt').limit(1)[0]['data']
+df1 = pd.DataFrame()
+for coluna in yesterday_data:
+    df1[coluna] = yesterday_data[coluna]
+
+uploadMongo(upload_dict=df.to_dict(orient='list'), apiName='ShowChecker')
+
 df = df.reset_index()
 df.drop(columns=['index'], axis=1, inplace=True)
 df = df[:-4]
 df1 = df1[:-4]
 
-if df.equals(df1):
+
+if df.equals(df1) and df.shape[0] <= df1.shape[0]:
     print('Sem novos shows')
 else:
     corpo_email = f"""
