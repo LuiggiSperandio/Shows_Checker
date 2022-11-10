@@ -50,6 +50,7 @@ for item in soup.find_all('p'):
         df = pd.concat([df, df_temp])
         iteracao = 0
 
+
 df['Cidade'] = df.Cidade.str.upper()
 
 yesterday_data = RawData.objects.order_by('-createdAt').limit(1)[0]['data']
